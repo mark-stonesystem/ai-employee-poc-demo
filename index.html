@@ -699,7 +699,7 @@
     <!-- Language toggle: EN ↔ 日本語 -->
     <div class="lang-toggle-wrapper" role="group" aria-label="Language selection">
       <span class="lang-label" id="lang-label-en" aria-hidden="true">English</span>
-      <label class="toggle-switch" title="Switch language / 言語を切り替える" id="lang-toggle-label" aria-label="Switch to Japanese">
+      <label class="toggle-switch" title="Switch language / 言語を切り替える" id="lang-toggle-label" aria-label="Switch to Japanese / 日本語に切り替える">
         <input type="checkbox" id="lang-toggle" role="switch" aria-checked="false" />
         <span class="toggle-track" aria-hidden="true"></span>
         <span class="toggle-thumb" aria-hidden="true" id="lang-toggle-thumb">EN</span>
@@ -902,9 +902,13 @@
       showers:         'Showers',
       thunderstorm:    'Thunderstorm',
 
-      /* Days */
+      /* Days – full names */
       Sun: 'Sunday', Mon: 'Monday', Tue: 'Tuesday',
       Wed: 'Wednesday', Thu: 'Thursday', Fri: 'Friday', Sat: 'Saturday',
+
+      /* Days – abbreviated (used in forecast date labels) */
+      Sun_short: 'Sun', Mon_short: 'Mon', Tue_short: 'Tue',
+      Wed_short: 'Wed', Thu_short: 'Thu', Fri_short: 'Fri', Sat_short: 'Sat',
     },
     ja: {
       app_title:       '日本の天気',
@@ -937,9 +941,14 @@
       showers:         'にわか雨',
       thunderstorm:    '雷雨',
 
-      /* Days */
+      /* Days – full names */
       Sun: '日曜日', Mon: '月曜日', Tue: '火曜日',
       Wed: '水曜日', Thu: '木曜日', Fri: '金曜日', Sat: '土曜日',
+
+      /* Days – abbreviated single kanji (日, 月, 火, 水, 木, 金, 土)
+         Each initial kanji is unique, making these unambiguous short labels */
+      Sun_short: '日', Mon_short: '月', Tue_short: '火',
+      Wed_short: '水', Thu_short: '木', Fri_short: '金', Sat_short: '土',
     },
   };
 
@@ -1075,20 +1084,23 @@
 
   /* ------------------------------------------------------------------
      UTILITY – format a date string from YYYY-MM-DD
+     Uses _short translation keys for abbreviated day labels so the
+     abbreviation logic is explicit and language-aware.
   ------------------------------------------------------------------ */
   function formatDate(dateStr, index) {
     const date = new Date(dateStr + 'T12:00:00');
     const dayNames3 = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
     const dayKey = dayNames3[date.getDay()];
-    const dayName = t(dayKey);
     if (index === 0) return t('today');
 
     const month = date.getMonth() + 1;
     const day   = date.getDate();
+    /* t(dayKey + '_short') returns e.g. 'Mon' (EN) or '月' (JA) */
+    const shortDay = t(dayKey + '_short');
     if (currentLang === 'ja') {
-      return `${month}月${day}日 (${dayName.charAt(0)})`;
+      return `${month}月${day}日 (${shortDay})`;
     }
-    return `${dayName.substring(0, 3)}, ${month}/${day}`;
+    return `${shortDay}, ${month}/${day}`;
   }
 
   /* ------------------------------------------------------------------
