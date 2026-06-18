@@ -699,7 +699,7 @@
     <!-- Language toggle: EN ↔ 日本語 -->
     <div class="lang-toggle-wrapper" role="group" aria-label="Language selection">
       <span class="lang-label" id="lang-label-en" aria-hidden="true">English</span>
-      <label class="toggle-switch" title="Switch language / 言語を切り替える" aria-label="Switch to Japanese">
+      <label class="toggle-switch" title="Switch language / 言語を切り替える" id="lang-toggle-label" aria-label="Switch to Japanese">
         <input type="checkbox" id="lang-toggle" role="switch" aria-checked="false" />
         <span class="toggle-track" aria-hidden="true"></span>
         <span class="toggle-thumb" aria-hidden="true" id="lang-toggle-thumb">EN</span>
@@ -739,10 +739,10 @@
       <!-- ----------------------------------------------------------------
            CURRENT WEATHER HERO
            -------------------------------------------------------------- -->
-      <section class="current-weather-card" aria-labelledby="current-weather-heading">
+      <section class="current-weather-card" aria-labelledby="current-city-name">
         <div class="current-weather-inner">
           <div class="current-left">
-            <h1 class="current-city-name" id="current-weather-heading" id="current-city-name">—</h1>
+            <h1 class="current-city-name" id="current-city-name">—</h1>
             <p class="current-date" id="current-date">—</p>
             <p class="current-condition-text" id="current-condition">—</p>
             <div class="current-temp-row">
@@ -1086,7 +1086,7 @@
     const month = date.getMonth() + 1;
     const day   = date.getDate();
     if (currentLang === 'ja') {
-      return `${month}月${day}日 (${dayName.replace('曜日','')})`;
+      return `${month}月${day}日 (${dayName.charAt(0)})`;
     }
     return `${dayName.substring(0, 3)}, ${month}/${day}`;
   }
@@ -1299,6 +1299,12 @@
 
     /* Update thumb label */
     document.getElementById('lang-toggle-thumb').textContent = this.checked ? 'JP' : 'EN';
+
+    /* Dynamically update aria-label to reflect what the toggle will do next */
+    document.getElementById('lang-toggle-label').setAttribute(
+      'aria-label',
+      this.checked ? 'Switch to English' : 'Switch to Japanese / 日本語に切り替える'
+    );
 
     applyTranslations();
   });
